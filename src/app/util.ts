@@ -28,6 +28,15 @@ export function reform2(d: Point[]): PointArray {
     return dict;
 }
 
+export function reform3(d: Point[]) {
+    let array = [[], []];
+    for (let i = 0; i < d.length; i++) {
+        array[0].push(d[i][0])
+        array[1].push(d[i][1])
+    }
+    return array;
+}
+
 export function rot(d: Point[], dg, ws): Point[] {
     let n = d.length,
         dnew = [],
@@ -104,4 +113,23 @@ export function getBox(d: Point[]) {
     };
 
     return box;
+}
+
+
+export function getStack(d: number[][]) {
+    let array = [[], []];
+    for (var i = 0; i < d[0].length; i++) {
+        d[1][i] = d[0][i] + d[1][i]
+    }
+    return d;
+}
+
+export function getPercentage(d: number[][]) {
+    let array = [[], []];
+    for (let i = 0; i < d[0].length; i++) {
+        let x = d[0][i] / (d[0][i] + d[1][i])
+        d[0][i] = x
+        d[1][i] = 1
+    }
+    return d;
 }
