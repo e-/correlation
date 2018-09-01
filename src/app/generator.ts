@@ -1,16 +1,5 @@
-import * as science from "science";
-import * as numbers from "numbers";
-
-let mean = numbers.statistic.mean;
-let sdc = numbers.statistic.standardDev;
-let corr = numbers.statistic.correlation;
-let gas: () => number = science.stats.distribution.gaussian();
-
-type Point = [number, number];
-type PointArray = {
-    X: number[],
-    Y: number[],
-}
+import { Point, PointArray } from "./types";
+import { corr, gas, mean, sdc } from "./util";
 
 /*
     Original Source Code: https://github.com/TuftsVALT/ranking-correlation/blob/master/experiment/public/modules/JND/trials.html
@@ -20,7 +9,7 @@ export class Generator {
     constructor() {
     }
 
-    generate(r: number, n: number, extent = 400, martio = 0.5, sdratio = 0.2) {
+    generate(r: number, n: number, extent = 300, martio = 0.5, sdratio = 0.2) {
         console.log("r input is " + r);
 
         let rsign = r;       // record the raw r
