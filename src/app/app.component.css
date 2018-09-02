@@ -1,0 +1,10 @@
+#container {
+    width: 900px;
+    padding-top: 50px;
+    margin: auto;
+}
+
+td {
+    width: 400px;
+    text-align: center;
+}

@@ -1,1 +1,72 @@
-<div #wrapper></div>
+<div id="container">
+    <div *ngIf="!vis">
+        <h2>Choose a visualization</h2>
+        <button (click)="go('scatterplot')">Scatterplot</button>
+        <button (click)="go('stackedbar')">StackedBarChart</button>
+        <button (click)="go('sortedbar')">SortedStackedBarChart</button>
+        <button (click)="go('colormap')">ColorMap</button>
+        <button (click)="go('sortedcolormap')">SortedColorMap</button>
+    </div>
+<div [hidden]="!vis">
+    <p>
+       Run: {{ experimenter.runIndex + 1 }} / {{ experimenter.runs.length}},
+       Trial: {{ experimenter.trialIndex + 1 }} / {{ experimenter.currentRun.maxTrials }}
+    </p>
+    <p>
+        Please select the visualization that appears to have a larger correlation. (This may be difficult, but try your best!)
+    </p>
+    <p id="choiceIntr">You can either click the buttons (A or B) or use the ◀ ▶ keys.
+    </p>
+
+    <table>
+        <tr>
+            <td>
+                <div #vis1></div>
+            </td>
+            <td>
+                <div #vis2></div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <button (click)="gradeTrial('L')">A</button>
+            </td>
+            <td>
+                <button (click)="gradeTrial('R')">B</button>
+            </td>
+        </tr>
+    </table>
+
+    <h4>logs (invisible to participants)</h4>
+    <table>
+        <tr>
+            <th>Trial #</th>
+            <th>Target R</th>
+            <th>Distracting R</th>
+            <th>Correct Vis</th>
+            <th>Correct?</th>
+            <th>JND (visible when index > 23)</th>
+        </tr>
+        <tr *ngFor="let t of experimenter.trials.reverse()">
+            <td>
+                {{ t.index }}
+            </td>
+            <td>
+                {{ t.rtarget | number }}
+            </td>
+            <td>
+                {{ t.rvariable | number }}
+            </td>
+            <td>
+                {{ t.correct }}
+            </td>
+            <td>
+                {{ t.gotItRight }}
+            </td>
+            <td>
+                {{ t.JND | number }}
+            </td>
+        </tr>
+    </table>
+</div>
+</div>

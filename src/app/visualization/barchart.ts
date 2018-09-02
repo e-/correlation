@@ -10,9 +10,13 @@ import { colorOptions } from "../colors";
 // 4 pixel because the extent is 400 while the size of dataset is 100
 // 2 pixel of margin bewteen a pair (x, y)
 
+export function SortedBarChart(wrapper: HTMLDivElement, data2: Point[], extent = 300) {
+    BarChart(wrapper, data2, extent, 1);
+}
 
-export function BarChart(wrapper: HTMLDivElement, data2: Point[], extent = 300, stack:'stacked'|'regular'|'percentage'|'stem' = 'stacked',
-                        order = 0, alpha = 0.9, margins = 20, offset = false, showLine = false) {
+export function BarChart(wrapper: HTMLDivElement, data2: Point[], extent = 300, order = 0,
+        stack:'stacked'|'regular'|'percentage'|'stem' = 'stacked',
+        alpha = 0.9, margins = 20, offset = false, showLine = false) {
     let extentOverall = -1;
 
     extentOverall = extent + margins * 2;

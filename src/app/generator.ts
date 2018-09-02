@@ -107,7 +107,6 @@ export class Generator {
         return d
     }
 
-
     private check(d: PointArray, extent: number) {
         let n = d.X.length;
         for (let i = 0; i < n; i++) {

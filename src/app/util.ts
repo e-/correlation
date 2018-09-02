@@ -10,6 +10,10 @@ export let min = numbers.basic.min;
 export let sum = numbers.basic.sum;
 export let gas: () => number = science.stats.distribution.gaussian();
 
+export function variance(arr) {
+    return sdc(arr) * sdc(arr)
+}
+
 export function reform(d: PointArray): Point[] {
     let array = [];
     for (let i = 0; i < d.X.length; i++) {
@@ -132,4 +136,13 @@ export function getPercentage(d: number[][]) {
         d[1][i] = 1
     }
     return d;
+}
+
+export function shuffle(o) { //v1.0
+    for (let j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
+    return o;
+};
+
+export function translate(x, y) {
+    return `translate(${x}, ${y})`;
 }
