@@ -7,13 +7,14 @@ import { Sequence, Run } from './run';
 import { Experimenter } from './experimenter';
 import { Trial } from './trial';
 import { ColorMap, SortedColorMap } from './visualization/colormap';
+import { Visualization } from './visualization/visualization';
 
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.css'],
     host: {
-        '(document:keyup)': 'handleKeyboardEvent($event)'
+        '(document:keydown)': 'handleKeyboardEvent($event)'
     }
 })
 export class AppComponent implements OnInit {
@@ -29,7 +30,9 @@ export class AppComponent implements OnInit {
     generator = new Generator();
 
     trial: Trial;
-    vis;
+    vis: Visualization;
+    useToggling = false;
+    firstVisible = true;
 
     constructor() {
     }
@@ -40,20 +43,20 @@ export class AppComponent implements OnInit {
         this.experimenter = new Experimenter(this.runs);
     }
 
-    go(type) {
+    go(type:string, useToggling = false) {
         if(type === 'scatterplot')
-            this.vis = Scatterplot;
+            this.vis = new Scatterplot();
         else if(type === 'stackedbar')
-            this.vis = BarChart;
+            this.vis = new BarChart();
         else if(type === 'sortedbar')
-            this.vis = SortedBarChart;
+            this.vis = new SortedBarChart();
         else if(type === 'colormap')
-            this.vis = ColorMap;
+            this.vis = new ColorMap();
         else if(type === 'sortedcolormap')
-            this.vis = SortedColorMap;
+            this.vis = new SortedColorMap();
 
         console.log(this.vis)
-
+        this.useToggling = useToggling;
         this.nextTrial();
     }
 
@@ -67,18 +70,29 @@ export class AppComponent implements OnInit {
         this.empty(this.vis1.nativeElement);
         this.empty(this.vis2.nativeElement);
 
-        this.vis(this.vis1.nativeElement, data1);
-        this.vis(this.vis2.nativeElement, data2);
+        this.vis.render(this.vis1.nativeElement, data1);
+        this.vis.render(this.vis2.nativeElement, data2);
+
+        this.firstVisible = true;
     }
 
     empty(element: HTMLDivElement) {
-        element.querySelectorAll('*').forEach(d => d.remove());
+        Array.prototype.slice.call(element.querySelectorAll('*')).forEach(d => d.remove());
     }
 
     handleKeyboardEvent(event: KeyboardEvent) {
         if (!this.trial) return;
-        if (event.keyCode == 37) this.gradeTrial('L');
-        else if (event.keyCode == 39) this.gradeTrial('R');
+        if(!this.useToggling) {
+            if (event.keyCode == 37) this.gradeTrial('L');
+            else if (event.keyCode == 39) this.gradeTrial('R');
+        }
+        else {
+            if(event.keyCode == 13) this.firstVisible = !this.firstVisible;
+            else if(event.keyCode == 32) {
+                this.gradeTrial(this.firstVisible ? 'L' : 'R')
+                event.preventDefault();
+            }
+        }
     }
 
     gradeTrial(choice: 'L' | 'R') {

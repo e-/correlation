@@ -1,41 +1,37 @@
 <div id="container">
     <div *ngIf="!vis">
         <h2>Choose a visualization</h2>
+        <h3>Static</h3>
         <button (click)="go('scatterplot')">Scatterplot</button>
         <button (click)="go('stackedbar')">StackedBarChart</button>
         <button (click)="go('sortedbar')">SortedStackedBarChart</button>
         <button (click)="go('colormap')">ColorMap</button>
         <button (click)="go('sortedcolormap')">SortedColorMap</button>
+        <h3>Toggling</h3>
+        <button (click)="go('scatterplot', true)">Scatterplot</button>
+        <button (click)="go('stackedbar', true)">StackedBarChart</button>
+        <button (click)="go('sortedbar', true)">SortedStackedBarChart</button>
+        <button (click)="go('colormap', true)">ColorMap</button>
+        <button (click)="go('sortedcolormap', true)">SortedColorMap</button>
     </div>
 <div [hidden]="!vis">
     <p>
        Run: {{ experimenter.runIndex + 1 }} / {{ experimenter.runs.length}},
-       Trial: {{ experimenter.trialIndex + 1 }} / {{ experimenter.currentRun.maxTrials }}
+       Trial: {{ experimenter.trialIndex }} / {{ experimenter.currentRun.maxTrials }}
     </p>
     <p>
         Please select the visualization that appears to have a larger correlation. (This may be difficult, but try your best!)
     </p>
-    <p id="choiceIntr">You can either click the buttons (A or B) or use the ◀ ▶ keys.
-    </p>
+    <p *ngIf="!useToggling">Use the ◀ ▶ keys to select a visualization with a larger correlation.</p>
+    <p *ngIf="useToggling">Use the Enter key to toggle the visualization and the Space key to select one.</p>
 
-    <table>
-        <tr>
-            <td>
-                <div #vis1></div>
-            </td>
-            <td>
-                <div #vis2></div>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <button (click)="gradeTrial('L')">A</button>
-            </td>
-            <td>
-                <button (click)="gradeTrial('R')">B</button>
-            </td>
-        </tr>
-    </table>
+    <div id="stimuli">
+        <div #vis1 [hidden]="useToggling && !firstVisible" class="stimulus"></div>
+        <div #vis2 [hidden]="useToggling && firstVisible" class="stimulus"></div>
+    </div>
+
+    <!-- <button (click)="gradeTrial('L')">A</button>
+    <button (click)="gradeTrial('R')">B</button> -->
 
     <h4>logs (invisible to participants)</h4>
     <table>

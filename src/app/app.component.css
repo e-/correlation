@@ -8,3 +8,16 @@ td {
     width: 400px;
     text-align: center;
 }
+
+#stimuli {
+    text-align: center;
+}
+
+.stimulus {
+    display: inline-block;
+    width: 400px;
+}
+
+[hidden] {
+    display: none !important;
+}
