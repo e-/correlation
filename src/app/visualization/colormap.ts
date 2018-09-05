@@ -5,6 +5,8 @@ import { colorOptions } from "../colors";
 import { Visualization } from "./visualization";
 
 export class ColorMap implements Visualization {
+    name = 'colormap';
+
     constructor(public extent = 600, public order = 0, public margins = 20) {
 
     }

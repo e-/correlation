@@ -8,6 +8,7 @@ import { Experimenter } from './experimenter';
 import { Trial } from './trial';
 import { ColorMap, SortedColorMap } from './visualization/colormap';
 import { Visualization } from './visualization/visualization';
+import { Point } from './types';
 
 @Component({
     selector: 'app-root',
@@ -26,20 +27,29 @@ export class AppComponent implements OnInit {
     runs: Run[];
     experimenter: Experimenter;
 
+    distance =  80;
+    visualAngle =  5;
+    screenSizeInInches = 15;
+    aspectRatioA = 16;
+    aspectRatioB = 9;
+
     numTrial = 0;
     generator = new Generator();
 
     trial: Trial;
     vis: Visualization;
     useToggling = false;
-    firstVisible = true;
+    dataSize = 100;
+    visibleDataIndex = 0;
+    data1: Point[];
+    data2: Point[];
 
     constructor() {
     }
 
     ngOnInit() {
+        this.load();
         this.runs = Sequence('three');
-
         this.experimenter = new Experimenter(this.runs);
     }
 
@@ -47,9 +57,9 @@ export class AppComponent implements OnInit {
         if(type === 'scatterplot')
             this.vis = new Scatterplot();
         else if(type === 'stackedbar')
-            this.vis = new BarChart();
+            this.vis = new BarChart(useToggling);
         else if(type === 'sortedbar')
-            this.vis = new SortedBarChart();
+            this.vis = new SortedBarChart(useToggling);
         else if(type === 'colormap')
             this.vis = new ColorMap();
         else if(type === 'sortedcolormap')
@@ -64,20 +74,23 @@ export class AppComponent implements OnInit {
         this.trial = this.experimenter.next();
         let trial = this.trial;
 
-        let data1 = reform(this.generator.generate(trial.r1, 100))
-        let data2 = reform(this.generator.generate(trial.r2, 100))
+        this.data1 = reform(this.generator.generate(trial.r1, this.dataSize))
+        this.data2 = reform(this.generator.generate(trial.r2, this.dataSize))
+        this.visibleDataIndex = 0;
 
-        this.empty(this.vis1.nativeElement);
-        this.empty(this.vis2.nativeElement);
-
-        this.vis.render(this.vis1.nativeElement, data1);
-        this.vis.render(this.vis2.nativeElement, data2);
-
-        this.firstVisible = true;
+        this.render();
     }
 
     empty(element: HTMLDivElement) {
         Array.prototype.slice.call(element.querySelectorAll('*')).forEach(d => d.remove());
+    }
+
+    render() {
+        this.empty(this.vis1.nativeElement);
+        this.empty(this.vis2.nativeElement);
+
+        this.vis.render(this.vis1.nativeElement, this.data1, this.unitSize, this.visibleDataIndex);
+        this.vis.render(this.vis2.nativeElement, this.data2, this.unitSize, this.visibleDataIndex);
     }
 
     handleKeyboardEvent(event: KeyboardEvent) {
@@ -87,11 +100,13 @@ export class AppComponent implements OnInit {
             else if (event.keyCode == 39) this.gradeTrial('R');
         }
         else {
-            if(event.keyCode == 13) this.firstVisible = !this.firstVisible;
-            else if(event.keyCode == 32) {
-                this.gradeTrial(this.firstVisible ? 'L' : 'R')
+            if(event.keyCode == 32) {
+                this.visibleDataIndex = 1 - this.visibleDataIndex;
+                this.render();
                 event.preventDefault();
             }
+            else if (event.keyCode == 37) this.gradeTrial('L');
+            else if (event.keyCode == 39) this.gradeTrial('R');
         }
     }
 
@@ -128,8 +143,52 @@ export class AppComponent implements OnInit {
         //         nextTrial();
         //     }, 1000);
         // }
+    }
 
+    save() {
+        if(!window.localStorage) return;
+        let ls = window.localStorage;
 
+        if(this.distance) ls.setItem('distance', this.distance.toString());
+        if(this.visualAngle) ls.setItem('visualAngle', this.visualAngle.toString());
+        if(this.screenSizeInInches) ls.setItem('screenSizeInInches', this.screenSizeInInches.toString());
+        if(this.aspectRatioA) ls.setItem('aspectRatioA', this.aspectRatioA.toString());
+        if(this.aspectRatioB) ls.setItem('aspectRatioB', this.aspectRatioB.toString());
+    }
+
+    load() {
+        if(!window.localStorage) return;
+        let ls = window.localStorage;
+
+        if(ls.getItem('distance')) this.distance = +ls.getItem('distance');
+        if(ls.getItem('visualAngle')) this.visualAngle = +ls.getItem('visualAngle');
+        if(ls.getItem('screenSizeInInches')) this.screenSizeInInches = +ls.getItem('screenSizeInInches');
+        if(ls.getItem('aspectRatioA')) this.aspectRatioA = +ls.getItem('aspectRatioA');
+        if(ls.getItem('aspectRatioB')) this.aspectRatioB = +ls.getItem('aspectRatioB');
+    }
+
+    get screenWidthInCm() {
+        return this.screenSizeInInches * 2.54 * this.aspectRatioA /
+            Math.sqrt(this.aspectRatioA * this.aspectRatioA + this.aspectRatioB * this.aspectRatioB);
+    }
+
+    get screenHeightInCm() {
+        return this.screenSizeInInches * 2.54 * this.aspectRatioB /
+            Math.sqrt(this.aspectRatioA * this.aspectRatioA + this.aspectRatioB * this.aspectRatioB);
+    }
+
+    get visWidthInCm() {
+        return 2 * this.distance * Math.tan(this.visualAngle / 180 * Math.PI / 2)
+    }
+
+    get actualVisWidthInPixels() {
+        return this.visWidthInCm / this.screenWidthInCm * window.screen.availWidth;
+    }
+
+    get unitSize() {
+        let width = this.actualVisWidthInPixels;
+
+        return Math.round(width / this.dataSize);
     }
 }
 

@@ -8,11 +8,44 @@
         <button (click)="go('colormap')">ColorMap</button>
         <button (click)="go('sortedcolormap')">SortedColorMap</button>
         <h3>Toggling</h3>
-        <button (click)="go('scatterplot', true)">Scatterplot</button>
         <button (click)="go('stackedbar', true)">StackedBarChart</button>
         <button (click)="go('sortedbar', true)">SortedStackedBarChart</button>
         <button (click)="go('colormap', true)">ColorMap</button>
         <button (click)="go('sortedcolormap', true)">SortedColorMap</button>
+
+        <h2>Screen Setup (currently only used for colormaps)</h2>
+        <ul id="setup">
+            <li>
+                Distance between eyes and the screen:
+                <input type="number" [(ngModel)]="distance" [style.width.px]="30" (change)="save()"/> cm
+            </li>
+            <li>
+                Central Vision Angle:
+                <input type="number" [(ngModel)]="visualAngle" [style.width.px]="20" (change)="save()"/> degrees
+            </li>
+            <li>
+                Screen Size (diagonal):
+                <input type="number" [(ngModel)]="screenSizeInInches" [style.width.px]="50" (change)="save()"/> inches
+                = {{ 2.54 * screenSizeInInches | number }} cm
+            </li>
+            <li>
+                Screen Aspect Ratio:
+                <input type="number" [(ngModel)]="aspectRatioA" [style.width.px]="30" (change)="save()"/>
+                :
+                <input type="number" [(ngModel)]="aspectRatioB" [style.width.px]="30" (change)="save()"/>
+                <ul>
+                    <li>Screen Width: {{ screenWidthInCm | number }} cm</li>
+                    <li>Screen Height: {{ screenHeightInCm | number }} cm</li>
+                </ul>
+            </li>
+            <li>
+                Actual Visualization Width: {{ visWidthInCm | number }} cm or
+                {{ actualVisWidthInPixels | number }} px
+            </li>
+            <li>
+                Rounded Unit Size for One Item ({{ dataSize }} items in total): {{ unitSize }} px
+            </li>
+        </ul>
     </div>
 <div [hidden]="!vis">
     <p>
@@ -22,12 +55,12 @@
     <p>
         Please select the visualization that appears to have a larger correlation. (This may be difficult, but try your best!)
     </p>
+    <p *ngIf="useToggling">Use the Space key to toggle beetween X and Y</p>
     <p *ngIf="!useToggling">Use the ◀ ▶ keys to select a visualization with a larger correlation.</p>
-    <p *ngIf="useToggling">Use the Enter key to toggle the visualization and the Space key to select one.</p>
 
     <div id="stimuli">
-        <div #vis1 [hidden]="useToggling && !firstVisible" class="stimulus"></div>
-        <div #vis2 [hidden]="useToggling && firstVisible" class="stimulus"></div>
+        <div #vis1 class="stimulus"></div>
+        <div #vis2 class="stimulus"></div>
     </div>
 
     <!-- <button (click)="gradeTrial('L')">A</button>

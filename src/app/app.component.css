@@ -21,3 +21,7 @@ td {
 [hidden] {
     display: none !important;
 }
+
+#setup > li {
+    margin-bottom: 10px;
+}

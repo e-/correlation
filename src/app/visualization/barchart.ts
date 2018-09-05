@@ -12,18 +12,19 @@ import { Visualization } from "./visualization";
 // 2 pixel of margin bewteen a pair (x, y)
 
 export class BarChart implements Visualization {
-    constructor(public extent = 300, public order = 0,
+    constructor(public useToggling, public order = 0,
         public stack: 'stacked' | 'regular' | 'percentage' | 'stem' = 'stacked',
         public alpha = 0.9, public margins = 20, public offset = false, public showLine = false) {
     }
 
-    render(wrapper: HTMLDivElement, data2: Point[]) {
+    render(wrapper: HTMLDivElement, data2: Point[], unitSize: number, dataIndex: number) {
         let extentOverall = -1;
+        let count = data2.length;
 
-        extentOverall = this.extent + this.margins * 2;
+        extentOverall = unitSize * count + this.margins * 2;
 
-        let width = this.extent,
-            height = this.extent,
+        let width = unitSize * count,
+            height = unitSize * count,
             margin = {
                 top: this.margins,
                 right: this.margins,
@@ -39,13 +40,19 @@ export class BarChart implements Visualization {
         //input structure[[x1,y1],[x2,y2],[x3,y3]], output[[x1,x2,x3],[y1,y2,y3]]
         let data = reform3(data2);
 
-        if (this.stack === 'stacked') {
+        if(this.useToggling) {
+            yDomain = d3.max(data[dataIndex]);
+        }
+        else if (this.stack === 'stacked') {
             data = getStack(data);
             yDomain = d3.max(data[1]);
-        } else if (this.stack === 'percentage') {
+        }
+        else if (this.stack === 'percentage') {
             data = getPercentage(data);
             yDomain = d3.max(data[1]);
         }
+
+
         let xScale = d3.scaleLinear().domain([0, width]).range([0, width])
         let yScale = d3.scaleLinear().domain([0, yDomain]).range([height, 0])
 
@@ -60,22 +67,25 @@ export class BarChart implements Visualization {
             .attr('height', height)
             .attr('class', 'main');
 
-        let n = data[0].length
-            , xColor = colorOptions[3].A
-            , yColor = colorOptions[3].B;
+        let n = data[0].length,
+            xColor = colorOptions[3].A,
+            yColor = colorOptions[3].B;
+        let colors = [xColor, yColor];
 
         let g = main.append('svg:g');
 
         // may change extent, so the step should be different
         // |    |     |
         // xbar y bar space
-        let step = this.extent / n,
-            barWidth = step / (!this.offset ? 1.0 : 2.0);
+        let step = unitSize,
+            barWidth = unitSize;
 
         let self = this;
 
         // draw y bars first
         // add barWid / 2 to move center of bars to right
+
+        if(!this.useToggling)
         g.selectAll('bars')
             .data(data[1])
             .enter().append("line")
@@ -91,15 +101,15 @@ export class BarChart implements Visualization {
         // draw x bars later because fm is lazy and don't want to compute coordinates
         // just let the x bars cover y bars
         g.selectAll('bars')
-            .data(data[0])
+            .data(data[this.useToggling ? dataIndex : 0])
             .enter().append("line")
             .attr('x1', function (d, i) { return i * step + barWidth / 2; })
             .attr('y1', function (d) { return self.stack === 'stem' ? (height / 2) : yScale(0); })
             .attr('x2', function (d, i) { return i * step + barWidth / 2; })
             .attr('y2', function (d) { return self.stack === 'stem' ? (height / 2 - d / 2) : yScale(d); })
-            .attr('stroke', xColor)
+            .attr('stroke', this.useToggling ? colors[dataIndex] : xColor)
             .attr('stroke-width', barWidth)
-            .style('fill', xColor)
+            .style('fill', this.useToggling ? colors[dataIndex] : xColor)
             .style('opacity', this.alpha);
 
         // draw the x axis
@@ -142,9 +152,9 @@ export class BarChart implements Visualization {
 }
 
 export class SortedBarChart extends BarChart {
-    constructor(public extent = 300, public order = 1,
+    constructor(public useToggling, public order = 1,
         public stack: 'stacked' | 'regular' | 'percentage' | 'stem' = 'stacked',
         public alpha = 0.9, public margins = 20, public offset = false, public showLine = false) {
-        super(extent, order, stack, alpha, margins, offset, showLine);
+        super(useToggling, order, stack, alpha, margins, offset, showLine);
     }
 }

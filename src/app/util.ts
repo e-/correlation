@@ -32,7 +32,7 @@ export function reform2(d: Point[]): PointArray {
     return dict;
 }
 
-export function reform3(d: Point[]) {
+export function reform3(d: Point[]): number[][] {
     let array = [[], []];
     for (let i = 0; i < d.length; i++) {
         array[0].push(d[i][0])
