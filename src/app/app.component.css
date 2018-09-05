@@ -25,3 +25,9 @@ td {
 #setup > li {
     margin-bottom: 10px;
 }
+
+.vertical {
+    display: block;
+    text-align: center;
+    width: auto;
+}

@@ -4,6 +4,8 @@ import { setBox, rot, getBox } from '../util';
 import { Visualization } from './visualization';
 
 export class Scatterplot implements Visualization {
+    name = 'scatterplot';
+
     constructor(public extent = 300, public showBox = false, public pSize = 1.5, public margins = 20, public factor = 1, public showLine = false) {
 
     }

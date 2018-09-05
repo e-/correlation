@@ -56,11 +56,12 @@
         Please select the visualization that appears to have a larger correlation. (This may be difficult, but try your best!)
     </p>
     <p *ngIf="useToggling">Use the Space key to toggle beetween X and Y</p>
-    <p *ngIf="!useToggling">Use the ◀ ▶ keys to select a visualization with a larger correlation.</p>
+    <p *ngIf="!vertical">Use the ◀ ▶ keys to select a visualization with a larger correlation.</p>
+    <p *ngIf="vertical">Use the ▲ ▼ keys to select a visualization with a larger correlation.</p>
 
     <div id="stimuli">
-        <div #vis1 class="stimulus"></div>
-        <div #vis2 class="stimulus"></div>
+        <div #vis1 class="stimulus" [class.vertical]="vertical"></div>
+        <div #vis2 class="stimulus" [class.vertical]="vertical"></div>
     </div>
 
     <!-- <button (click)="gradeTrial('L')">A</button>

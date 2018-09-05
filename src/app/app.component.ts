@@ -44,6 +44,8 @@ export class AppComponent implements OnInit {
     data1: Point[];
     data2: Point[];
 
+    vertical = false;
+
     constructor() {
     }
 
@@ -64,7 +66,8 @@ export class AppComponent implements OnInit {
             this.vis = new ColorMap(useToggling);
         else if(type === 'sortedcolormap')
             this.vis = new SortedColorMap(useToggling);
-            
+
+        this.vertical = this.vis.name === 'colormap';
         this.useToggling = useToggling;
         this.nextTrial();
     }
@@ -95,8 +98,10 @@ export class AppComponent implements OnInit {
     handleKeyboardEvent(event: KeyboardEvent) {
         if (!this.trial) return;
         if(!this.useToggling) {
-            if (event.keyCode == 37) this.gradeTrial('L');
-            else if (event.keyCode == 39) this.gradeTrial('R');
+            if (!this.vertical && event.keyCode == 37) this.gradeTrial('L');
+            else if (!this.vertical && event.keyCode == 39) this.gradeTrial('R');
+            else if (this.vertical && event.keyCode == 38) this.gradeTrial('L');
+            else if (this.vertical && event.keyCode == 40) this.gradeTrial('R');
         }
         else {
             if(event.keyCode == 32) {
@@ -104,8 +109,10 @@ export class AppComponent implements OnInit {
                 this.render();
                 event.preventDefault();
             }
-            else if (event.keyCode == 37) this.gradeTrial('L');
-            else if (event.keyCode == 39) this.gradeTrial('R');
+            else if (!this.vertical && event.keyCode == 37) this.gradeTrial('L');
+            else if (!this.vertical && event.keyCode == 39) this.gradeTrial('R');
+            else if (this.vertical && event.keyCode == 38) this.gradeTrial('L');
+            else if (this.vertical && event.keyCode == 40) this.gradeTrial('R');
         }
     }
 

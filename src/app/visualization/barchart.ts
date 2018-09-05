@@ -12,6 +12,8 @@ import { Visualization } from "./visualization";
 // 2 pixel of margin bewteen a pair (x, y)
 
 export class BarChart implements Visualization {
+    name = 'barchart';
+
     constructor(public useToggling, public order = 0,
         public stack: 'stacked' | 'regular' | 'percentage' | 'stem' = 'stacked',
         public alpha = 0.9, public margins = 20, public offset = false, public showLine = false) {
