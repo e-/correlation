@@ -7,18 +7,15 @@ import { Visualization } from "./visualization";
 export class ColorMap implements Visualization {
     name = 'colormap';
 
-    constructor(public extent = 600, public order = 0, public margins = 20) {
+    constructor(public useToggling, public order = 0, public margins = 20) {
 
     }
 
-    render(wrapper: HTMLDivElement, data2: Point[]) {
-        let extentOverall = -1;
+    render(wrapper: HTMLDivElement, data2: Point[], unitSize: number, dataIndex: number) {
+        let n = data2.length;
 
-        extentOverall = this.extent + this.margins * 2;
-        let size = this.extent / data2.length;
-
-        let width = size * 2,
-            height = this.extent,
+        let width = unitSize * n,
+            height = unitSize * 2,
             margin = {
                 top: this.margins,
                 right: 0,
@@ -36,8 +33,8 @@ export class ColorMap implements Visualization {
 
         let chart = d3.select(wrapper)
             .append('svg:svg')
-            .attr('width', width)
-            .attr('height', extentOverall)
+            .attr('width', unitSize * n)
+            .attr('height', height + this.margins * 2)
             .attr('class', 'chart');
 
         let scale = d3.scaleSequential(d3.interpolateBlues).domain([0, 300]);
@@ -48,29 +45,28 @@ export class ColorMap implements Visualization {
             .attr('height', height)
             .attr('class', 'main');
 
-        let n = data[0].length
         let g = main.append('svg:g');
 
         g
             .selectAll('g')
-            .data(data)
+            .data(this.useToggling ? [data[dataIndex]] : data)
             .enter()
             .append('g')
-            .attr('transform', (d, i) => translate(i * size, 0))
+            .attr('transform', (d, i) => translate(0, unitSize * 2 * i))
             .selectAll('rect')
             .data((d) => d)
             .enter()
             .append('rect')
-            .attr('width', size)
-            .attr('height', size)
-            .attr('transform', (d, i) => translate(0, i * size))
+            .attr('width', unitSize)
+            .attr('height', unitSize)
+            .attr('transform', (d, i) => translate(i * unitSize, 0))
             .attr('fill', (d, i) => scale(d))
     }
 
 }
 
 export class SortedColorMap extends ColorMap {
-    constructor(public extent = 600, public order = 1, public margins = 20) {
-        super(extent, order, margins);
+    constructor(public useToggling, public order = 1, public margins = 20) {
+        super(useToggling, order, margins);
     }
 }

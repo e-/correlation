@@ -61,11 +61,10 @@ export class AppComponent implements OnInit {
         else if(type === 'sortedbar')
             this.vis = new SortedBarChart(useToggling);
         else if(type === 'colormap')
-            this.vis = new ColorMap();
+            this.vis = new ColorMap(useToggling);
         else if(type === 'sortedcolormap')
-            this.vis = new SortedColorMap();
-
-        console.log(this.vis)
+            this.vis = new SortedColorMap(useToggling);
+            
         this.useToggling = useToggling;
         this.nextTrial();
     }
