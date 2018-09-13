@@ -45,6 +45,7 @@ export class AppComponent implements OnInit {
     data2: Point[];
 
     vertical = false;
+    logVisible = false;
 
     constructor() {
     }

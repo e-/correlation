@@ -17,22 +17,22 @@
         <ul id="setup">
             <li>
                 Distance between eyes and the screen:
-                <input type="number" [(ngModel)]="distance" [style.width.px]="30" (change)="save()"/> cm
+                <input type="number" [(ngModel)]="distance" [style.width.px]="30" (change)="save()" /> cm
             </li>
             <li>
                 Central Vision Angle:
-                <input type="number" [(ngModel)]="visualAngle" [style.width.px]="20" (change)="save()"/> degrees
+                <input type="number" [(ngModel)]="visualAngle" [style.width.px]="20" (change)="save()" /> degrees
             </li>
             <li>
                 Screen Size (diagonal):
-                <input type="number" [(ngModel)]="screenSizeInInches" [style.width.px]="50" (change)="save()"/> inches
+                <input type="number" [(ngModel)]="screenSizeInInches" [style.width.px]="50" (change)="save()" /> inches
                 = {{ 2.54 * screenSizeInInches | number }} cm
             </li>
             <li>
                 Screen Aspect Ratio:
-                <input type="number" [(ngModel)]="aspectRatioA" [style.width.px]="30" (change)="save()"/>
+                <input type="number" [(ngModel)]="aspectRatioA" [style.width.px]="30" (change)="save()" />
                 :
-                <input type="number" [(ngModel)]="aspectRatioB" [style.width.px]="30" (change)="save()"/>
+                <input type="number" [(ngModel)]="aspectRatioB" [style.width.px]="30" (change)="save()" />
                 <ul>
                     <li>Screen Width: {{ screenWidthInCm | number }} cm</li>
                     <li>Screen Height: {{ screenHeightInCm | number }} cm</li>
@@ -47,56 +47,59 @@
             </li>
         </ul>
     </div>
-<div [hidden]="!vis">
-    <p>
-       Run: {{ experimenter.runIndex + 1 }} / {{ experimenter.runs.length}},
-       Trial: {{ experimenter.trialIndex }} / {{ experimenter.currentRun.maxTrials }}
-    </p>
-    <p>
-        Please select the visualization that appears to have a larger correlation. (This may be difficult, but try your best!)
-    </p>
-    <p *ngIf="useToggling">Use the Space key to toggle beetween X and Y</p>
-    <p *ngIf="!vertical">Use the ◀ ▶ keys to select a visualization with a larger correlation.</p>
-    <p *ngIf="vertical">Use the ▲ ▼ keys to select a visualization with a larger correlation.</p>
+    <div [hidden]="!vis">
+        <p>
+            Run: {{ experimenter.runIndex + 1 }} / {{ experimenter.runs.length}},
+            Trial: {{ experimenter.trialIndex }} / {{ experimenter.currentRun.maxTrials }}
+        </p>
+        <p>
+            Please select the visualization that appears to have a larger correlation. (This may be difficult, but try
+            your best!)
+        </p>
+        <p *ngIf="useToggling">Use the Space key to toggle beetween X and Y</p>
+        <p *ngIf="!vertical">Use the ◀ ▶ keys to select a visualization with a larger correlation.</p>
+        <p *ngIf="vertical">Use the ▲ ▼ keys to select a visualization with a larger correlation.</p>
 
-    <div id="stimuli">
-        <div #vis1 class="stimulus" [class.vertical]="vertical"></div>
-        <div #vis2 class="stimulus" [class.vertical]="vertical"></div>
-    </div>
+        <div id="stimuli">
+            <div #vis1 class="stimulus" [class.vertical]="vertical"></div>
+            <div #vis2 class="stimulus" [class.vertical]="vertical"></div>
+        </div>
 
-    <!-- <button (click)="gradeTrial('L')">A</button>
+        <!-- <button (click)="gradeTrial('L')">A</button>
     <button (click)="gradeTrial('R')">B</button> -->
 
-    <h4>logs (invisible to participants)</h4>
-    <table>
-        <tr>
-            <th>Trial #</th>
-            <th>Target R</th>
-            <th>Distracting R</th>
-            <th>Correct Vis</th>
-            <th>Correct?</th>
-            <th>JND (visible when index > 23)</th>
-        </tr>
-        <tr *ngFor="let t of experimenter.trials.reverse()">
-            <td>
-                {{ t.index }}
-            </td>
-            <td>
-                {{ t.rtarget | number }}
-            </td>
-            <td>
-                {{ t.rvariable | number }}
-            </td>
-            <td>
-                {{ t.correct }}
-            </td>
-            <td>
-                {{ t.gotItRight }}
-            </td>
-            <td>
-                {{ t.JND | number }}
-            </td>
-        </tr>
-    </table>
-</div>
-</div>
+        <button (click)="logVisible = !logVisible">Toggle Logs</button>
+        <div [hidden]="!logVisible">
+            <h4>logs (invisible to participants)</h4>
+            <table>
+                <tr>
+                    <th>Trial #</th>
+                    <th>Target R</th>
+                    <th>Distracting R</th>
+                    <th>Correct Vis</th>
+                    <th>Correct?</th>
+                    <th>JND (visible when index > 23)</th>
+                </tr>
+                <tr *ngFor="let t of experimenter.trials.reverse()">
+                    <td>
+                        {{ t.index }}
+                    </td>
+                    <td>
+                        {{ t.rtarget | number }}
+                    </td>
+                    <td>
+                        {{ t.rvariable | number }}
+                    </td>
+                    <td>
+                        {{ t.correct }}
+                    </td>
+                    <td>
+                        {{ t.gotItRight }}
+                    </td>
+                    <td>
+                        {{ t.JND | number }}
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
