@@ -70,8 +70,8 @@ export class BarChart implements Visualization {
             .attr('class', 'main');
 
         let n = data[0].length,
-            xColor = colorOptions[3].A,
-            yColor = colorOptions[3].B;
+            xColor = colorOptions[0][0][1],
+            yColor = colorOptions[0][1][1];
         let colors = [xColor, yColor];
 
         let g = main.append('svg:g');
@@ -98,7 +98,7 @@ export class BarChart implements Visualization {
             .attr('stroke', yColor)
             .attr('stroke-width', barWidth)
             .style('fill', yColor)
-            .style('opacity', this.alpha);
+            // .style('opacity', this.alpha);
 
         // draw x bars later because fm is lazy and don't want to compute coordinates
         // just let the x bars cover y bars
@@ -112,7 +112,7 @@ export class BarChart implements Visualization {
             .attr('stroke', this.useToggling ? colors[dataIndex] : xColor)
             .attr('stroke-width', barWidth)
             .style('fill', this.useToggling ? colors[dataIndex] : xColor)
-            .style('opacity', this.alpha);
+            // .style('opacity', this.alpha);
 
         // draw the x axis
         let xAxis = d3.axisTop(xScale)
@@ -139,7 +139,6 @@ export class BarChart implements Visualization {
                 .attr('stroke', function (d, i) { return i === 0 ? xColor : yColor; })
                 .attr('stroke-size', barWidth)
                 .attr('fill', 'none')
-                .attr('opacity', this.alpha);
         }
 
         // draw the y axis

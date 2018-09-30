@@ -6,25 +6,25 @@ import { Visualization } from './visualization';
 export class Scatterplot implements Visualization {
     name = 'scatterplot';
 
-    constructor(public extent = 300, public showBox = false, public pSize = 1.5, public margins = 20, public factor = 1, public showLine = false) {
+    constructor(public useToggling,
+        public showBox = false, public pSize = 1.5, public margins = 20, public factor = 1, public showLine = false) {
 
     }
 
-    render(wrapper: HTMLDivElement, data: Point[]) {
-        let extentOverall = this.extent + this.margins * 2,
+    render(wrapper: HTMLDivElement, data: Point[], unitSize: number, dataIndex: number) {
+        let count = data.length;
+        let extentOverall = unitSize * count + this.margins * 2,
             boxData = [];
 
-        let width = this.extent,
-            height = this.extent,
+
+        let width = unitSize * count,
+            height = unitSize * count,
             margin = {
                 top: this.margins,
                 right: this.margins,
                 bottom: this.margins,
                 left: this.margins
             };
-
-        if (this.factor != 1)
-            data = setBox(data, 90, 400, this.factor);
 
         let x = d3.scaleLinear().domain([0, width]).range([0, width]);
         let y = d3.scaleLinear().domain([0, height]).range([height, 0]);

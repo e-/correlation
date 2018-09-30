@@ -3,6 +3,7 @@ import { reform2, getStack, reform3, getPercentage, translate } from "../util";
 import * as d3 from 'd3';
 import { colorOptions } from "../colors";
 import { Visualization } from "./visualization";
+import { Color } from "d3";
 
 export class ColorMap implements Visualization {
     name = 'colormap';
@@ -15,7 +16,7 @@ export class ColorMap implements Visualization {
         let n = data2.length;
 
         let width = unitSize * n,
-            height = unitSize * 2,
+            height = unitSize * n,
             margin = {
                 top: this.margins,
                 right: 0,
@@ -31,13 +32,18 @@ export class ColorMap implements Visualization {
         //input structure[[x1,y1],[x2,y2],[x3,y3]], output[[x1,x2,x3],[y1,y2,y3]]
         let data = reform3(data2);
 
+        let barWidth = width / (this.useToggling ? 1 : 2);
+        let barHeight = unitSize;
+
         let chart = d3.select(wrapper)
             .append('svg:svg')
-            .attr('width', unitSize * n)
+            .attr('width', width)
             .attr('height', height + this.margins * 2)
             .attr('class', 'chart');
 
-        let scale = d3.scaleSequential(d3.interpolateBlues).domain([0, 300]);
+        let scale = d3.scaleLinear<Color>()
+        .range([d3.rgb(colorOptions[0][0][0]), d3.rgb(colorOptions[0][0][1])])
+        .domain([0, width]);
 
         let main = chart.append('g')
             .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
@@ -52,15 +58,15 @@ export class ColorMap implements Visualization {
             .data(this.useToggling ? [data[dataIndex]] : data)
             .enter()
             .append('g')
-            .attr('transform', (d, i) => translate(0, unitSize * 2 * i))
+            .attr('transform', (d, i) => translate(barWidth * i, 0))
             .selectAll('rect')
             .data((d) => d)
             .enter()
             .append('rect')
-            .attr('width', unitSize)
-            .attr('height', unitSize)
-            .attr('transform', (d, i) => translate(i * unitSize, 0))
-            .attr('fill', (d, i) => scale(d))
+            .attr('width', barWidth)
+            .attr('height', barHeight)
+            .attr('transform', (d, i) => translate(0, i * barHeight))
+            .attr('fill', (d, i) => scale(d).toString())
     }
 
 }

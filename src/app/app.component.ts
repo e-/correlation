@@ -58,7 +58,7 @@ export class AppComponent implements OnInit {
 
     go(type:string, useToggling = false) {
         if(type === 'scatterplot')
-            this.vis = new Scatterplot();
+            this.vis = new Scatterplot(useToggling);
         else if(type === 'stackedbar')
             this.vis = new BarChart(useToggling);
         else if(type === 'sortedbar')
@@ -68,7 +68,7 @@ export class AppComponent implements OnInit {
         else if(type === 'sortedcolormap')
             this.vis = new SortedColorMap(useToggling);
 
-        this.vertical = this.vis.name === 'colormap';
+        // this.vertical = this.vis.name === 'colormap';
         this.useToggling = useToggling;
         this.nextTrial();
     }
@@ -76,9 +76,9 @@ export class AppComponent implements OnInit {
     nextTrial() {
         this.trial = this.experimenter.next();
         let trial = this.trial;
-
-        this.data1 = reform(this.generator.generate(trial.r1, this.dataSize))
-        this.data2 = reform(this.generator.generate(trial.r2, this.dataSize))
+        let width = this.unitSize * this.dataSize;
+        this.data1 = reform(this.generator.generate(trial.r1, this.dataSize, width))
+        this.data2 = reform(this.generator.generate(trial.r2, this.dataSize, width))
         this.visibleDataIndex = 0;
 
         this.render();
@@ -196,6 +196,10 @@ export class AppComponent implements OnInit {
         let width = this.actualVisWidthInPixels;
 
         return Math.round(width / this.dataSize);
+    }
+
+    home() {
+        this.vis = undefined;
     }
 }
 

@@ -1,4 +1,5 @@
 <div id="container">
+    <button (click)="home()">Home</button>
     <div *ngIf="!vis">
         <h2>Choose a visualization</h2>
         <h3>Static</h3>
@@ -8,6 +9,7 @@
         <button (click)="go('colormap')">ColorMap</button>
         <button (click)="go('sortedcolormap')">SortedColorMap</button>
         <h3>Toggling</h3>
+        <!-- <button (click)="go('scatterplot', true)">Scatterplot</button> -->
         <button (click)="go('stackedbar', true)">StackedBarChart</button>
         <button (click)="go('sortedbar', true)">SortedStackedBarChart</button>
         <button (click)="go('colormap', true)">ColorMap</button>
